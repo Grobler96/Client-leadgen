@@ -1,0 +1,4 @@
+# Cloud sandbox. Networking is unrestricted because the agent researches arbitrary
+# business websites and directories whose hosts can't be listed in advance.
+name: aibyao-lead-research-env
+config: {type: cloud, networking: {type: unrestricted}}

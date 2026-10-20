@@ -1,0 +1,3 @@
+# The container for the agent's secrets. Never put a secret in this file.
+type: vault
+display_name: aibyao-lead-research
