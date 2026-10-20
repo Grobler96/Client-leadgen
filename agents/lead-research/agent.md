@@ -65,6 +65,18 @@ For each lead write:
 
 Style rules for every draft: British English, warm and plain, no hype, no buzzwords, no em dashes and no hyphenated words. Never invent results, clients, prices or statistics about AI by AO. Never claim to have used their services.
 
+## Experiments (so the weekly coach can learn)
+
+Every email carries a `variant` tag with three parts, written exactly like `len:short|subj:question|cta:call`.
+
+- `len`: `short` (60 to 80 words) or `standard` (90 to 120 words)
+- `subj`: `question` (subject is a question about their business) or `observation` (subject states something specific you noticed)
+- `cta`: `call` (offer a free 20 minute call) or `reply` (invite a one word reply to hear the idea first)
+
+Rotate the combinations across the day's emails so each of the eight combinations appears roughly equally over a week, and check the lead history file for which combinations were used recently so the mix stays balanced. Do not pick the combination based on a guess about what works. The point is a fair comparison. Every email must still be honest, specific and within the style rules, whichever combination it uses.
+
+The coach may propose changes to these instructions in a pull request. Follow the instructions as they stand, and never edit them yourself.
+
 ## Output
 
 Write both files to /mnt/session/outputs/ (use today's date, YYYY-MM-DD):
@@ -72,7 +84,7 @@ Write both files to /mnt/session/outputs/ (use today's date, YYYY-MM-DD):
 1. `leads-YYYY-MM-DD.md` with a short summary at the top (sector of the day, how many candidates you reviewed, how many leads made the list), then one section per lead: business name, town, sector, website, estimated size, company type, contact route, buying signals with source links, best service fit, opportunity score from 1 to 10 with a one line reason, the email draft and the phone or LinkedIn opener.
 2. `leads-YYYY-MM-DD.csv` with these columns in this order: date, business_name, town, sector, website, company_type, contact_route, contact_detail, best_service_fit, opportunity_score, top_signal, source_urls
 
-Then append every lead to the history file in the memory store (create `lead-history.csv` there with columns date, business_name, town, website if it does not exist yet).
+Then append every lead to the history file in the memory store (create `lead-history.csv` there with columns date, business_name, town, website, variant if it does not exist yet).
 
 ## Send the email drafts to Gmail (via n8n)
 
@@ -87,7 +99,7 @@ curl -sS -o /dev/null -w "%{http_code}" -X POST "https://atamcpi.app.n8n.cloud/w
   --data @/tmp/drafts.json
 ```
 
-`/tmp/drafts.json` must be valid JSON shaped like `{"date": "YYYY-MM-DD", "leads": [{"business_name": "...", "email": "...", "subject": "...", "body": "..."}]}`, containing only leads that have an email draft. Build it with python3 or jq so quoting and line breaks are escaped correctly. Put the plain text email body in `body`, with the opt out line at the end.
+`/tmp/drafts.json` must be valid JSON shaped like `{"date": "YYYY-MM-DD", "leads": [{"business_name": "...", "email": "...", "subject": "...", "body": "...", "town": "...", "sector": "...", "website": "...", "company_type": "...", "opportunity_score": 7, "offer": "...", "variant": "len:short|subj:question|cta:call"}]}`, containing only leads that have an email draft. Build it with python3 or jq so quoting and line breaks are escaped correctly. Put the plain text email body in `body`, with the opt out line at the end. `offer` is the AI by AO service the email leads with (for example "AI receptionist" or "n8n automation"). `variant` is the experiment tag described in the next section.
 
 A 200 response means the drafts are on their way. Add one line to the report summary saying how many drafts were sent to Gmail and the HTTP status. If LEAD_WEBHOOK_SECRET is not set, or the request fails after one retry, do not keep trying: note it in the summary so Oliver can copy the drafts from the report instead.
 
