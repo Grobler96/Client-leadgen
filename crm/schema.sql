@@ -1,8 +1,12 @@
 -- AI by AO outreach CRM schema (Postgres / Supabase).
--- One row per lead. Contains no secrets. Apply to a dedicated AI by AO project only,
--- never to any ATAM or client project.
+-- One row per lead. Contains no secrets.
+-- Applied to the aibyao schema of the N8N_Daniel_Spooner Supabase project (owner approved).
+-- The schema is not exposed via the API and anon/authenticated have no grants.
 
-create table if not exists public.leads (
+create schema if not exists aibyao;
+revoke all on schema aibyao from anon, authenticated, public;
+
+create table if not exists aibyao.leads (
   id               uuid primary key default gen_random_uuid(),
   company          text not null,
   company_number   text,                -- Companies House number, supports the limited company check
@@ -31,21 +35,22 @@ create table if not exists public.leads (
   updated_at       timestamptz not null default now()
 );
 
-create index if not exists leads_outcome_idx on public.leads (outcome);
-create index if not exists leads_industry_idx on public.leads (industry);
-create index if not exists leads_sent_at_idx on public.leads (sent_at);
+create index if not exists leads_outcome_idx on aibyao.leads (outcome);
+create index if not exists leads_industry_idx on aibyao.leads (industry);
+create index if not exists leads_sent_at_idx on aibyao.leads (sent_at);
 
-create or replace function public.set_updated_at() returns trigger
-language plpgsql as $$
+create or replace function aibyao.set_updated_at() returns trigger
+language plpgsql set search_path = '' as $$
 begin
   new.updated_at = now();
   return new;
 end $$;
 
-drop trigger if exists leads_set_updated_at on public.leads;
-create trigger leads_set_updated_at before update on public.leads
-  for each row execute function public.set_updated_at();
+drop trigger if exists leads_set_updated_at on aibyao.leads;
+create trigger leads_set_updated_at before update on aibyao.leads
+  for each row execute function aibyao.set_updated_at();
 
 -- Lock the table down. No policies means anon and authenticated roles get nothing;
 -- only the service role key (held in an environment secret) can read or write.
-alter table public.leads enable row level security;
+alter table aibyao.leads enable row level security;
+revoke all on aibyao.leads from anon, authenticated, public;
