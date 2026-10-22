@@ -11,14 +11,16 @@ Note for Oliver: the OAuth credential itself carries broad Gmail permissions, so
 ## What each run does
 
 1. Ask the gateway for open leads (`list_open`): drafted, sent or replied.
-2. For each lead with a draft ID: if the draft is gone and a message to that address now exists in Sent, call `record_sent` with the sent time and thread ID. (Sent detection reads the Sent folder as well as the inbox. This is the only reason that folder is read.)
-3. For each lead with a thread ID: read new inbound messages in the thread and classify each one with simple rules first:
-   - sender is `mailer-daemon` or `postmaster`, or the subject starts "Undeliverable": `bounce`
-   - headers `Auto-Submitted` or `X-Autoreply`, or subject contains "out of office" or "automatic reply": `auto_reply`
-   - body contains "unsubscribe", "remove me", "stop emailing", "do not contact": `opt_out` (the gateway adds the address to the suppression list)
+2. Read the latest 200 inbox messages and the latest 200 sent messages (Gmail "get many", read only). Gmail's own search filters proved unreliable through n8n, so matching is done inside n8n instead.
+3. A Code step matches messages to open leads by sender or recipient address. Anything that is not from or to an open lead is dropped inside n8n and never sent anywhere. Messages from before a lead's draft are ignored.
+4. Matched inbound mail is classified with simple rules:
+   - from `mailer-daemon` or `postmaster`, or subject like "undeliverable": `bounce`
+   - "out of office" or "automatic reply": `auto_reply`
+   - "unsubscribe", "remove me", "stop emailing", "do not contact": `opt_out` (the address goes on the suppression list)
    - anything else: `reply`
-4. Call `record_reply` with the first 300 characters only as the snippet. Full bodies are never stored.
-5. A real `reply` is stored with outcome `interested` as a starting point. Oliver sets the real outcome (call booked, client, not interested) in the CRM. A short reply summary needs a language model, which costs credits, so it stays switched off until Oliver approves it.
+5. Matched sent mail records `sent_at` for drafts Oliver has now sent.
+6. Only the matched events go to the gateway (`record_reply`, `record_sent`), with a snippet capped at 300 characters. Full bodies are never stored.
+7. A real reply starts with outcome `interested`. Oliver sets the real outcome (call booked, client, not interested) in the CRM. Reply summaries need a language model, which costs credits, so they stay off until Oliver approves.
 
 ## Follow up drafts
 

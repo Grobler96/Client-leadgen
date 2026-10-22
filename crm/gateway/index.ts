@@ -57,9 +57,12 @@ const actions: Record<string, (p: any) => Promise<unknown>> = {
   },
 
   async record_sent(p) {
+    // sent_at is always recorded. The stage only moves forward from registered or drafted,
+    // so a reply that arrived in the same window is never undone.
     await sql`update aibyao.leads set sent_at = coalesce(sent_at, ${p.sent_at ?? new Date().toISOString()}),
-              gmail_thread_id = coalesce(${p.thread_id ?? null}, gmail_thread_id), stage = 'sent'
-              where id = ${p.lead_id} and stage in ('registered','drafted')`;
+              gmail_thread_id = coalesce(gmail_thread_id, ${p.thread_id ?? null}),
+              stage = case when stage in ('registered','drafted') then 'sent' else stage end
+              where id = ${p.lead_id}`;
     return { ok: true };
   },
 
