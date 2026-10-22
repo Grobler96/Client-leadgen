@@ -1,0 +1,3 @@
+# Cloud sandbox for the weekly coach. It only needs to reach the CRM gateway and GitHub.
+name: aibyao-coach-env
+config: {type: cloud, networking: {type: unrestricted}}
