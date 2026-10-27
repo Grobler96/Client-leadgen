@@ -1,0 +1,21 @@
+# Runs every Monday at 06:45 UK time. Each run is capped at $3 of list cost. Not applied until Oliver approves the spend.
+name: aibyao-coach-weekly
+agent: ./agent.md
+environment_id: ./environment.yaml
+# Fill in the vlt_... ID after applying vault.yaml. The vault holds CRM_API_SECRET and a GITHUB_TOKEN that can only open pull requests on this repo.
+vault_ids: []
+schedule: {type: cron, expression: "45 6 * * 1", timezone: Europe/London}
+budget: {type: limit, max_list_cost: {amount: "300", currency: USD}}
+initial_events:
+  - type: user.define_outcome
+    description: |
+      Produce this week's AI by AO outreach report from the CRM, honestly labelled for small samples, save it to the CRM, and open a draft pull request with proposed changes to agents/lead-research/agent.md only if the data is strong enough.
+    max_iterations: 2
+    rubric:
+      type: text
+      content: |
+        - The report fits on one page and has the six sections in order.
+        - Every rate is shown with its sent count, and no group under 30 sent emails is called proven or recommended for a drop.
+        - No em dashes, no hyphenated words, no prospect email addresses anywhere.
+        - A pull request is opened only if at least 30 emails were sent in the window, it is a draft, it targets main, and it changes only agents/lead-research/agent.md.
+        - Nothing was merged, pushed to main, sent or deleted.
