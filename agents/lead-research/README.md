@@ -1,6 +1,6 @@
 # AI by AO lead research agent
 
-A Claude Managed Agent that runs every weekday at 07:15 UK time. It finds up to 8 new West Yorkshire small businesses that show evidenced signs they'd benefit from AI by AO's services, researches each one, and drafts personalised outreach for Oliver to review. It never contacts anyone itself: email drafts land in Oliver's Gmail drafts folder (through an n8n workflow) for him to review and send.
+A Claude Managed Agent that runs every weekday at 07:15 UK time. It finds up to 5 new West Yorkshire small businesses that show evidenced signs they'd benefit from AI by AO's services, researches each one, and drafts personalised outreach for Oliver to review. It never contacts anyone itself: email drafts land in Oliver's Gmail drafts folder (through an n8n workflow) for him to review and send.
 
 | File | What it is |
 |---|---|
