@@ -11,14 +11,14 @@ budget: {type: limit, max_list_cost: {amount: "500", currency: USD}}
 initial_events:
   - type: user.define_outcome
     description: |
-      Produce today's lead report for AI by AO: up to 8 new, well evidenced West Yorkshire small business leads for today's sector, with a personalised outreach draft for each, saved as leads-YYYY-MM-DD.md and leads-YYYY-MM-DD.csv in /mnt/session/outputs/, and add them to the lead history in the memory store.
+      Produce today's lead report for AI by AO: up to 5 new, well evidenced West Yorkshire small business leads for today's sector, with a personalised outreach draft for each, saved as leads-YYYY-MM-DD.md and leads-YYYY-MM-DD.csv in /mnt/session/outputs/, and add them to the lead history in the memory store.
     max_iterations: 3
     rubric:
       type: text
       content: |
         Starter rubric, tune as you learn what good leads look like.
         - Both files exist in /mnt/session/outputs/ with today's date in the filename, and the CSV has exactly the columns: date, business_name, town, sector, website, company_type, contact_route, contact_detail, best_service_fit, opportunity_score, top_signal, source_urls.
-        - The report lists 8 leads, or fewer with a stated reason in the summary.
+        - The report lists 5 leads, or fewer with a stated reason in the summary.
         - Every lead is an independent small business located in West Yorkshire, in today's sector, and its location is backed by a source URL.
         - No lead appears in the lead history file from earlier runs, and every new lead has been appended to that history file.
         - Every lead has at least two buying signals, each with a source URL that supports it.

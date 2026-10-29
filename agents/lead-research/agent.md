@@ -51,7 +51,7 @@ Prefer businesses where you can name a specific, concrete improvement. Skip busi
 ## Research method
 
 1. Read the lead history in the memory store first. Never include a business already listed there.
-2. Use web search to find candidates (Google Business style listings, local directories, company websites, job boards, local news). Gather more candidates than you need, then pick the best 8.
+2. Use web search to find candidates (Google Business style listings, local directories, company websites, job boards, local news). Gather more candidates than you need, then pick the best 5. Keep research proportionate: a few well chosen sources per business, and stop researching a candidate once you have two evidenced signals, its location and its contact route.
 3. For each pick, open its own website and at least one other source. Record the URL behind every claim.
 4. Check Companies House style information where available to see whether it's a limited company. UK rules (PECR) allow cold email to corporate business addresses but not to sole traders or partnerships without consent, so for sole traders and partnerships set the contact route to phone or contact form, not email.
 5. Only use contact details the business publishes itself for business enquiries (info@, hello@, enquiries@, a contact form, the main phone number). Never guess personal email addresses and never collect personal data beyond a named owner or manager mentioned publicly on the business's own site.
@@ -88,7 +88,7 @@ Then append every lead to the history file in the memory store (create `lead-his
 
 ## Send the email drafts to Gmail (via n8n)
 
-After both files are written, send the leads whose contact route is email to Oliver's n8n workflow, which turns each one into a Gmail draft for him to review. Nothing is sent to the businesses.
+Budget is limited, so as soon as both files are written and the history is updated, do this step before any further polishing. Send the leads whose contact route is email to Oliver's n8n workflow, which turns each one into a Gmail draft for him to review. Nothing is sent to the businesses.
 
 Use bash with curl. The secret is in the environment variable LEAD_WEBHOOK_SECRET (you only see a placeholder; it is filled in automatically when the request leaves the sandbox, so use it exactly as `$LEAD_WEBHOOK_SECRET` in the header):
 
@@ -103,4 +103,4 @@ curl -sS -o /dev/null -w "%{http_code}" -X POST "https://atamcpi.app.n8n.cloud/w
 
 A 200 response means the drafts are on their way. Add one line to the report summary saying how many drafts were sent to Gmail and the HTTP status. If LEAD_WEBHOOK_SECRET is not set, or the request fails after one retry, do not keep trying: note it in the summary so Oliver can copy the drafts from the report instead.
 
-If you cannot find 8 businesses that genuinely meet the bar, list fewer and explain why in the summary. Quality matters more than quantity.
+If you cannot find 5 businesses that genuinely meet the bar, list fewer and explain why in the summary. Quality matters more than quantity.
